@@ -7,7 +7,7 @@ Helper macros of various kind.*/
 #include <stdint.h>
 
 /** returns the sizeof member \a m of a struct (type) \a st*/
-#define msizeof(struct_type, member) (sizeof(( (struct_type *)(0) )->member))
+#define msizeof(struct_type, member) (sizeof(((struct_type *)(0) )->member))
 
 /** \name bit operations on integers*/
 //@{
@@ -49,18 +49,18 @@ Allows to specify binary constants in C. */
 
 	int main()
 	{
-		SW2( DDR) = INPUT;
-		SW2( PORT) = PULLUP_ON;
-		LED2( DDR) = OUTPUT;
-		while( 1)
+		SW2(DDR) = INPUT;
+		SW2(PORT) = PULLUP_ON;
+		LED2(DDR) = OUTPUT;
+		while(1)
 		{
-			if( SW2( PIN) == LOW)
+			if(SW2(PIN) == LOW)
 			{
-				LED2( PORT) = HIGH;
+				LED2(PORT) = HIGH;
 			}
 			else
 			{
-				LED2( PORT) = LOW;
+				LED2(PORT) = LOW;
 			}
 		}
 	}\endcode
