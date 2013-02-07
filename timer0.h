@@ -74,6 +74,7 @@ enum timer0mode { TIMER_ONESHOT, TIMER_PERIODIC, TIMER_STOP };
 #define	OCR0_SHORT	250
 #define	OCR0_LONG	250
 #define	DUR0_LONG	16
+#define	DUR0_MAX	65.535f
 #define	RES0	0.001f
 //@}
 
