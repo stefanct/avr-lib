@@ -62,17 +62,22 @@ inline int serialGetCharNoWait(FILE *stream){
 }
 //@}
 
+/** @name baud rate settings
+ * The default baud rate is 57600. This can be changed by defining
+ * AVRLIB_SERIAL_BAUD to expand to the wanted baud rate. */
+//@{
+#ifndef BAUD
+	#ifdef AVRLIB_SERIAL_BAUD
+		#define BAUD AVRLIB_SERIAL_BAUD
+	#else
+		#define BAUD 57600
+	#endif
+	#define BAUD_TOL 4
+#endif
+//@}
+
 /** Initializes the UART.*/
 void serialInit(){
-	// set baud rate
-	#ifndef BAUD
-		#ifdef SERIAL_BAUD
-			#define BAUD SERIAL_BAUD
-		#else
-			#define BAUD 57600
-		#endif
-		#define BAUD_TOL 4
-	#endif
 	#include <util/setbaud.h>
 	UART_BAUD_HI = UBRRH_VALUE;
 	UART_BAUD_LO = UBRRL_VALUE;
