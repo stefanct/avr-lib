@@ -54,7 +54,7 @@ int configure_timer ## TIMERNUM (enum timermode intmode, CNT_LONG_TYPE(TIMERNUM)
 	OCR ## TIMERNUM ## B = 0; \
 	/* TCCR ## TIMERNUM ## A &= ~_BV(COM ## TIMERNUM ## B1); */ \
 	/* TCCR ## TIMERNUM ## A |= _BV(COM ## TIMERNUM ## B0); */ \
-	TIMSK ## TIMERNUM |= _BV(OCIE ## TIMERNUM ## A); /* enable OCR1 match interrupt */ \
+	TIMSK ## TIMERNUM |= _BV(OCIE ## TIMERNUM ## A); /* enable OCRnA match interrupt */ \
 	return 0; \
 } \
 \

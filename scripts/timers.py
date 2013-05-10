@@ -27,6 +27,7 @@ def main(*args):
 	parser.add_argument('-lw', '--long_width', action='store', dest='long_width', default='8', help='Width of the variable storing the long count')
 	parser.add_argument('-t', '--timer', action='store', dest='timer', default='0', help='Timer number')
 
+	orig_args = " ".join(args)
 	args = parser.parse_args()
 	verbose = args.verbose
 	timer = int(args.timer)
@@ -116,9 +117,11 @@ def main(*args):
 #define OCR{timer}_LONG       {ocr_long}
 #define DUR{timer}_LONG       {dur_long}
 #define DUR{timer}_LONG_WIDTH {long_width}
-/* for documentation only: */
+/* for documentation only:
+created by '{orig_args}' */
 #define DUR{timer}_MAX        {max_time}f /* [s] */
-#define RES{timer}            {res}f /* [s] */""".format(timer=timer, presc_short=presc_short, presc_long=presc_long, ocr_short=ocr_short, ocr_long=ocr_long, dur_long=int(long_dur/res), long_width=long_width, max_time=long_max_time + short_max_time, res=res)
+#define F_TIMER{timer}        {freq} /* [Hz] */
+#define RES{timer}            {res}f /* [s] */""".format(timer=timer, presc_short=presc_short, presc_long=presc_long, ocr_short=ocr_short, ocr_long=ocr_long, dur_long=int(long_dur/res), long_width=long_width, orig_args=orig_args, max_time=long_max_time + short_max_time, freq=freq, res=res)
 
 	return 0
 
