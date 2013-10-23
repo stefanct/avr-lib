@@ -18,8 +18,11 @@ timer drivers header.*/
 #define OCR0_LONG       250
 #define DUR0_LONG       16
 #define DUR0_LONG_WIDTH 16
-/* for documentation only: */
-#define DUR0_MAX        1048.5600000000f /* [s] */
+#define DUR0_PARAM_WIDTH 16
+/* for documentation only:
+created by './timers.py -r 0.001 -f 16000000 -tw 8 -lw 16 -t 0' */
+#define DUR0_MAX        1048.8150000000f /* [s] */
+#define F_TIMER0        16000000 /* [Hz] */
 #define RES0            0.001f /* [s] */
 
 /* timer1 */
@@ -29,8 +32,11 @@ timer drivers header.*/
 #define OCR1_LONG       250
 #define DUR1_LONG       16
 #define DUR1_LONG_WIDTH 16
-/* for documentation only: */
-#define DUR1_MAX        1048.5600000000f /* [s] */
+#define DUR1_PARAM_WIDTH 16
+/* for documentation only:
+created by './timers.py -r 0.001 -f 16000000 -tw 8 -lw 16 -t 1 -v' */
+#define DUR1_MAX        1048.8150000000f /* [s] */
+#define F_TIMER1        16000000 /* [Hz] */
 #define RES1            0.001f /* [s] */
 //@}
 #endif
@@ -115,9 +121,10 @@ PRESC_EXTR     1      1      1     External clock source on Tn pin. Clock on ris
 \endcode */
 #define SET_TPRESC(NUM, PRESC) TCCR ## NUM ## B |= (0x7 & PRESC); TCCR ## NUM ## B &= (~0x7 | PRESC)
 
-#define __CNT_LONG_TYPE(W) uint ## W ## _t
-#define _CNT_LONG_TYPE(W) __CNT_LONG_TYPE(W)
-#define CNT_LONG_TYPE(TIMERNUM) _CNT_LONG_TYPE(DUR ## TIMERNUM ## _LONG_WIDTH)
+#define __BITS_TYPE(W) uint ## W ## _t
+#define _BITS_TYPE(W) __BITS_TYPE(W)
+#define CNT_LONG_TYPE(TIMERNUM) _BITS_TYPE(DUR ## TIMERNUM ## _LONG_WIDTH)
+#define DUR_PARAM_TYPE(TIMERNUM) _BITS_TYPE(DUR ## TIMERNUM ## _PARAM_WIDTH)
 
 /** defines the 3 modes timer can be configured to.
 	- TIMER_ONESHOT Timer stops after the first Period
@@ -128,7 +135,7 @@ enum timermode { TIMER_ONESHOT, TIMER_PERIODIC, TIMER_STOP };
 
 #define RESET_TIMER(TIMERNUM) TCNT ## TIMERNUM = 0;
 #define TIMER_DECLS(TIMERNUM) \
-int configure_timer ## TIMERNUM(enum timermode mode, CNT_LONG_TYPE(TIMERNUM) duration, void (*cb)(void));
+int configure_timer ## TIMERNUM(enum timermode mode, DUR_PARAM_TYPE(TIMERNUM) duration, void (*cb)(void));
 
 #ifdef PRESC0_SHORT
 TIMER_DECLS(0)

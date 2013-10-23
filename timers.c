@@ -24,7 +24,7 @@ and uses the remainder as counter for short 1 \c RES ## TIMERNUM s time slices. 
 \param intmode Timer mode. one of TIMER_PERIODIC, TIMER_ONESHOT or TIMER_STOP as defined by #timer ## TIMERNUM ## mode \
 \param dur Duration to/between interrupt(s) \
 \param cb functionpointer that references the function to call */ \
-int configure_timer ## TIMERNUM (enum timermode intmode, CNT_LONG_TYPE(TIMERNUM) dur, void (*cb)(void)) { \
+int configure_timer ## TIMERNUM (enum timermode intmode, DUR_PARAM_TYPE(TIMERNUM) dur, void (*cb)(void)) { \
 	SET_TPRESC(TIMERNUM, PRESC_OFF); /* disable timer (at least temporarily) */ \
 	if (intmode >= TIMER_STOP || dur == 0 || *cb == NULL) { \
 		/* incorrect parameters, prevent execution of callback method \

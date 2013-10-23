@@ -17,7 +17,7 @@ def isPowOfTwo(n):
 	return math.log(n, 2) % 1 == 0
 
 def main(*args):
-	global verbose, long_width, timer_width, timer
+	global verbose, long_width, timer_width, param_width, timer
 	# docs: http://docs.python.org/dev/library/argparse.html#argparse.ArgumentParser.add_argument
 	parser = argparse.ArgumentParser(description='Script to calculate AVR timer constants.')
 	parser.add_argument('-v', action='count', dest='verbose', help='How much output is printed')
@@ -25,6 +25,7 @@ def main(*args):
 	parser.add_argument('-r', '--res', action='store', dest='res', default='-1', help='Resolution in seconds. The smallest period the timer should support.')
 	parser.add_argument('-tw', '--timer_width', action='store', dest='timer_width', default='8', help='Width of timer counter in bits')
 	parser.add_argument('-lw', '--long_width', action='store', dest='long_width', default='8', help='Width of the variable storing the long count')
+	parser.add_argument('-pw', '--param_width', action='store', dest='param_width', default='8', help='Width of the parameter configuring the duration')
 	parser.add_argument('-t', '--timer', action='store', dest='timer', default='0', help='Timer number')
 
 	orig_args = " ".join(args)
@@ -35,11 +36,16 @@ def main(*args):
 	res = Decimal(args.res)
 	timer_width = int(args.timer_width)
 	long_width = int(args.long_width)
+	param_width = int(args.param_width)
+	if param_width < long_width:
+		param_width = long_width
+
 	if \
 		freq < 0 or \
 		freq > 100 * pow(10, 6) or \
 		res < 0 or \
 		not isPowOfTwo(timer_width) or \
+		not isPowOfTwo(param_width) or \
 		not isPowOfTwo(long_width) \
 		:
 		printerr("Invalid arguments")
@@ -83,17 +89,23 @@ def main(*args):
 				presc_short = presc
 				continue
 
+	if verbose:
+		print presc_tbl
+
+	if presc_short == 0:
+		print "No perfect match of prescaler and top value found for this resolution (%f), frequency and word lengths" % res
+		return 1
+
 	short_max_time = Decimal(clk_period * presc_short * ocr_short * 255)
 	short_max_res = Decimal(short_max_time / res)
 	if verbose:
-		print presc_tbl
 		print "OCR_SHORT: %d, PRESC_SHORT: %d" % (ocr_short, presc_short)
 		print "maximum interval reachable with the short prescaler (%d) alone: %fs (%d RES)" % (presc_short, short_max_time, short_max_res)
 
 	ocr_long = timer_max + 1
 	presc_long = 0
 	for presc in (1, 8, 64, 256, 1024):
-		if presc <= presc_short:
+		if presc < presc_short:
 			continue
 		for i in xrange (1, timer_max + 1):
 			val = Decimal(clk_period * presc * i / res)
@@ -117,11 +129,12 @@ def main(*args):
 #define OCR{timer}_LONG       {ocr_long}
 #define DUR{timer}_LONG       {dur_long}
 #define DUR{timer}_LONG_WIDTH {long_width}
+#define DUR{timer}_PARAM_WIDTH {param_width}
 /* for documentation only:
 created by '{orig_args}' */
 #define DUR{timer}_MAX        {max_time}f /* [s] */
 #define F_TIMER{timer}        {freq} /* [Hz] */
-#define RES{timer}            {res}f /* [s] */""".format(timer=timer, presc_short=presc_short, presc_long=presc_long, ocr_short=ocr_short, ocr_long=ocr_long, dur_long=int(long_dur/res), long_width=long_width, orig_args=orig_args, max_time=long_max_time + short_max_time, freq=freq, res=res)
+#define RES{timer}            {res}f /* [s] */""".format(timer=timer, presc_short=presc_short, presc_long=presc_long, ocr_short=ocr_short, ocr_long=ocr_long, dur_long=int(long_dur/res), long_width=long_width, param_width=param_width, orig_args=orig_args, max_time=long_max_time + short_max_time, freq=freq, res=res)
 
 	return 0
 
