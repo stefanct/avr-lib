@@ -67,17 +67,17 @@ Allows to specify binary constants in C. */
 */
 //@{
 __extension__ struct bits { 
-  uint8_t b0:1; 
-  uint8_t b1:1; 
-  uint8_t b2:1; 
-  uint8_t b3:1; 
-  uint8_t b4:1; 
-  uint8_t b5:1; 
-  uint8_t b6:1; 
-  uint8_t b7:1; 
-}  __attribute__((__packed__,)); 
-#define BIT(name,pin,reg)\
-((*(volatile struct bits*)&reg##name).b##pin)
+	uint8_t b0:1;
+	uint8_t b1:1;
+	uint8_t b2:1;
+	uint8_t b3:1;
+	uint8_t b4:1;
+	uint8_t b5:1;
+	uint8_t b6:1;
+	uint8_t b7:1;
+} __attribute__((__packed__,));
+#define BIT(port,pin,reg)\
+((*(volatile struct bits*)&reg##port).b##pin)
 // @}
 
 /** \name Register name conversions
@@ -85,13 +85,32 @@ __extension__ struct bits {
 Allows to derive port, ddr and pin register names. */
 //@{
 
-#define PORT_(port) PORT ## port 
-#define DDR_(port)  DDR  ## port 
-#define PIN_(port)  PIN  ## port 
+#define PORT_(port) PORT ## port
+#define DDR_(port)  DDR  ## port
+#define PIN_(port)  PIN  ## port
 
-#define PORT(port) PORT_(port) 
-#define DDR(port)  DDR_(port) 
+#define PORT(port) PORT_(port)
+#define DDR(port)  DDR_(port)
 #define PIN(port)  PIN_(port)
 // @}
 
-#endif
+#define likely(x)	__builtin_expect((x),1)
+#define unlikely(x)	__builtin_expect((x),0)
+
+/* http://www.pixelbeat.org/programming/gcc/static_assert.html */
+#define ASSERT_CONCAT_(a, b) a##b
+#define ASSERT_CONCAT(a, b) ASSERT_CONCAT_(a, b)
+/* These can't be used after statements in c89. */
+#ifdef __COUNTER__
+	#define STATIC_ASSERT(e,m) \
+		{ enum { ASSERT_CONCAT(static_assert_, __COUNTER__) = 1/(!!(e)) }; }
+#else
+	/* This can't be used twice on the same line so ensure if using in headers
+	 * that the headers are not included twice (by wrapping in #ifndef...#endif)
+	 * Note it doesn't cause an issue when used on same line of separate modules
+	 * compiled with gcc -combine -fwhole-program.  */
+	#define STATIC_ASSERT(e,m) \
+		{ enum { ASSERT_CONCAT(assert_line_, __LINE__) = 1/(!!(e)) }; }
+#endif // __COUNTER__
+
+#endif // __MACROS_H__

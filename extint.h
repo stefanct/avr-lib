@@ -3,6 +3,8 @@ Macros to easily utilize external interrupts.*/
 #ifndef __EXTINT_H__
 #define __EXTINT_H__
 
+#include <avr/sfr_defs.h>
+#include <avr/interrupt.h>
 #include "macros.h"
 
 #define EXTINT_TRIGGER_LOW		0
@@ -14,7 +16,7 @@ Macros to easily utilize external interrupts.*/
 	CLB(EIMSK, PIN);\
 	if(PIN<4)\
 		EICRA |= EXTINT_TRIGGER<<(2*PIN);\
-	else \
+	else\
 		EICRB |= EXTINT_TRIGGER<<(2*PIN - 8);\
 	SEB(EIFR, PIN); /* clear spurious interrupt*/\
 	SEB(EIMSK, PIN);
