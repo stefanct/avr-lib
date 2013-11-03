@@ -6,10 +6,10 @@ Serial driver header.*/
 #include <stdio.h>
 
 									/********** ATmegaxxU2 ***********/
-#if defined(__AVR_AT90USB162__) \
-|| defined(__AVR_ATmega8U2__) || defined(__AVR_ATmega16U2__) || defined(__AVR_ATmega32U2__)
+#if defined(__AVR_AT90USB162__) || \
+    defined(__AVR_ATmega8U2__) || defined(__AVR_ATmega16U2__) || defined(__AVR_ATmega32U2__) || \
+    defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
 // u2 USB ATmega with one UART
-// #define AT90_UART
 // interrupts
 #define UART_RX_VECT  USART1_RX_vect
 #define UART_TX_VECT  USART1_UDRE_vect

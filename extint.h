@@ -12,7 +12,7 @@ Macros to easily utilize external interrupts.*/
 #define EXTINT_TRIGGER_FALLING	2
 #define EXTINT_TRIGGER_RISING	3
 
-#define extintEnable(PIN, EXTINT_TRIGGER) \
+#define EXTINT_ENABLE(PIN, EXTINT_TRIGGER) \
 	CLB(EIMSK, PIN);\
 	if(PIN<4)\
 		EICRA |= EXTINT_TRIGGER<<(2*PIN);\
@@ -21,7 +21,7 @@ Macros to easily utilize external interrupts.*/
 	SEB(EIFR, PIN); /* clear spurious interrupt*/\
 	SEB(EIMSK, PIN);
 
-#define extintDisable(PIN) \
+#define EXTINT_DISABLE(PIN) \
 	CLB(EIMSK, PIN);
 
 #endif // __EXTINT_H__

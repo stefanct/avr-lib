@@ -144,4 +144,4 @@ TIMER_DECLS(0)
 TIMER_DECLS(1)
 #endif
 
-#endif
+#endif // __TIMERS_H__

@@ -1,7 +1,6 @@
 /**\file
 SPI driver.*/
 
-#include <stdint.h>
 #include <avr/io.h>
 #include "spi.h"
 

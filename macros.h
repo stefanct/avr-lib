@@ -36,7 +36,7 @@ Allows to specify binary constants in C. */
 //@}
 
 /** sets bits in register REG, masked by MASK, given by VALUE */
-#define CFG_REG(REG, VALUE, MASK) (REG) |= (MASK & VALUE); ((REG) &= (~MASK | VALUE))
+#define CFG_REG(REG, VALUE, MASK) (REG) |= ((MASK) & (VALUE)); ((REG) &= (~(MASK) | (VALUE)))
 
 /** Convenience macro to combine I/O DDR/PORT/PIN and pin assignments together.
 

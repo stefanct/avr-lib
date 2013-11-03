@@ -73,7 +73,7 @@ ISR(TIMER ## TIMERNUM ## _COMPA_vect) { \
 				SET_TPRESC(TIMERNUM, PRESC ## TIMERNUM ## _SHORT); \
 				TCNT ## TIMERNUM = 0; \
 				OCR ## TIMERNUM ## A = OCR ## TIMERNUM ## _SHORT; \
-			}else \
+			} else \
 				t ## TIMERNUM ## _cnt_short--; \
 		} else { /* duration is over */ \
 			if (t ## TIMERNUM ## _mode == TIMER_PERIODIC) { \

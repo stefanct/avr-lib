@@ -17,7 +17,8 @@ SPI driver header.*/
 #define SPI_SCK PB5
 //@}
 
-#elif defined(__AVR_AT90USB162__) || defined(__AVR_ATmega8U2__) || defined(__AVR_ATmega16U2__) || defined(__AVR_ATmega32U2__) /*********************/
+#elif defined(__AVR_AT90USB162__) || defined(__AVR_ATmega8U2__) || defined(__AVR_ATmega16U2__) || defined(__AVR_ATmega32U2__) || \
+    defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__)
 #define SPI_PORT PORTB
 #define SPI_DDR	DDRB
 #define SPI_SS PB0
@@ -26,7 +27,7 @@ SPI driver header.*/
 #define SPI_SCK PB1
 
 #else /*********************/
-	#error "Untested Target!\n"
+	#error "Unsupported Target!\n"
 #endif
 
 /** \name SPI prescaler settings*/

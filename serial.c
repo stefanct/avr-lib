@@ -102,10 +102,12 @@ void serialInit(){
 	// clock polarity
 	CLB(UART_MODE, UART_POL);
 	
-	// disable flow control
+	// disable flow control (not available on u4)
+#if !(defined(__AVR_ATmega16U4__) || defined(__AVR_ATmega32U4__))
 	CLB(UART_FLOW, CTSEN);
 	CLB(UART_FLOW, RTSEN);
-	
+#endif
+
 	// enable rx and tx
 	SEB(UART_CONTROL, UART_RX_EN);
 	SEB(UART_CONTROL, UART_TX_EN);
