@@ -36,8 +36,12 @@ int configure_timer ## TIMERNUM (enum timermode intmode, DUR_PARAM_TYPE(TIMERNUM
 	/* common settings */ \
 	t ## TIMERNUM ## _cnt_long = t ## TIMERNUM ## _dur_long = dur / DUR ## TIMERNUM ## _LONG; \
 	t ## TIMERNUM ## _cnt_short = t ## TIMERNUM ## _dur_short = dur % DUR ## TIMERNUM ## _LONG; \
-	T ## TIMERNUM ## _WGM_CTC(); \
-	PWMA_OFF(TIMERNUM); \
+	if (IS_TIMER_COMPLEX(TIMERNUM)) {\
+		PWM_SET_MODE(TIMERNUM, PWM_COMPLEX_OP_CTC_OCR); \
+	} else { \
+		PWM_SET_MODE(TIMERNUM, PWM_SIMPLE_OP_CTC); \
+	} \
+	SET_ALLCOM_OFF(TIMERNUM); \
 	TCNT ## TIMERNUM = 0; \
 	t ## TIMERNUM ## _callback = cb; \
 	t ## TIMERNUM ## _mode = intmode; \

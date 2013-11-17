@@ -4,17 +4,7 @@
 import os, sys, math, argparse, time
 from cdecimal import Decimal
 from prettytable import PrettyTable
-
-def printerr(msg):
-	sys.stderr.write(msg + '\n')
-	sys.stderr.flush()
-
-def printnln(s):
-	sys.stdout.write(s)
-	sys.stdout.flush()
-
-def isPowOfTwo(n):
-	return math.log(n, 2) % 1 == 0
+from common import *
 
 def main(*args):
 	global verbose, long_width, timer_width, param_width, timer
