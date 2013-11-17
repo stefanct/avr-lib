@@ -7,6 +7,7 @@ Serial driver + buffer.*/
 #include "macros.h"
 #include "serial.h"
 
+#ifndef AVRLIB_SERIAL_WO
 /** @name Variables and defines related to the receive buffer*/
 //@{
 #define RX_BUFFER_SIZE 8 /**< Size of the buffer \c rx_buffer.*/
@@ -19,6 +20,7 @@ static volatile unsigned char rx_buffer[RX_BUFFER_SIZE]; /**< Buffer that stores
 static volatile uint8_t rx_buffer_head = 0; /**< Index where to write the next incoming character.*/
 static volatile uint8_t rx_buffer_tail = 0; /**< Index where to read next.*/
 //@}
+#endif // !AVRLIB_SERIAL_WO
 
 /** @name Variables and defines related to the transmit buffer*/
 //@{
@@ -44,15 +46,16 @@ inline int serialPutCharBlock(char c, FILE *stream){
 	return serialWriteBlock(c);
 }
 
-inline int serialGetCharBlock(FILE *stream){
-	(void)stream;
-	return serialReadBlock();
-}
-
 inline int serialPutCharNoWait(char c, FILE *stream){
 	(void)stream;
 	serialWriteNoWait(c);
 	return 0;
+}
+
+#ifndef AVRLIB_SERIAL_WO
+inline int serialGetCharBlock(FILE *stream){
+	(void)stream;
+	return serialReadBlock();
 }
 
 inline int serialGetCharNoWait(FILE *stream){
@@ -60,6 +63,7 @@ inline int serialGetCharNoWait(FILE *stream){
 	serialReadNoWait();
 	return 0;
 }
+#endif // !AVRLIB_SERIAL_WO
 //@}
 
 /** @name baud rate settings
@@ -77,7 +81,7 @@ inline int serialGetCharNoWait(FILE *stream){
 //@}
 
 /** Initializes the UART.*/
-void serialInit(){
+void serialInit(void){
 	#include <util/setbaud.h>
 	UART_BAUD_HI = UBRRH_VALUE;
 	UART_BAUD_LO = UBRRL_VALUE;
@@ -109,13 +113,15 @@ void serialInit(){
 #endif
 
 	// enable rx and tx
-	SEB(UART_CONTROL, UART_RX_EN);
 	SEB(UART_CONTROL, UART_TX_EN);
-	
-	// enable interrupt on complete reception of a byte
-	SEB(UART_CONTROL, UART_RX_IE);
+#ifndef AVRLIB_SERIAL_WO
+		SEB(UART_CONTROL, UART_RX_EN);
+		// enable interrupt on complete reception of a byte
+		SEB(UART_CONTROL, UART_RX_IE);
+#endif // !AVRLIB_SERIAL_WO
 }
 
+#ifndef AVRLIB_SERIAL_WO
 /** @name Reading*/
 //@{
 /** Returns the number of available characters in the buffer.*/
@@ -188,6 +194,8 @@ uint8_t serialReadBlock(void){
 }
 //@}
 
+#endif // !AVRLIB_SERIAL_WO
+
 /** @name Writing*/
 //@{
 /** Returns the number of free characters in the tx_buffer.*/
@@ -225,6 +233,7 @@ uint8_t serialWriteBlock(unsigned char c){
 }
 //@}
 
+#ifndef AVRLIB_SERIAL_WO
 /** Interrupt routine that is called when a new character has arrived.
 If there is space it stores the recevied data in the buffer at index \c rx_buffer_head.*/
 ISR(UART_RX_VECT){
@@ -237,6 +246,7 @@ ISR(UART_RX_VECT){
 		rx_buffer_head = i;
 	}
 }
+#endif // !AVRLIB_SERIAL_WO
 
 /** Interrupt routine that is called when the UART is ready to send a new byte.
 It checks the tx_buffer for unsent data and puts it into the UART's output register if available.

@@ -74,11 +74,10 @@ Serial driver header.*/
 #define UART_STOPB    USBS0
 #endif
 
-int serialPutCharBlock(char c, FILE *stream);
-int serialGetCharBlock(FILE *stream);
-int serialPutCharNoWait(char c, FILE *stream);
-int serialGetCharNoWait(FILE *stream);
 void serialInit(void);
+#ifndef AVRLIB_SERIAL_WO
+int serialGetCharBlock(FILE *stream);
+int serialGetCharNoWait(FILE *stream);
 uint8_t serialReadAvailableCnt(void);
 uint8_t serialReadAvailableCntWait(uint8_t bytes, uint8_t milliSeconds);
 uint8_t serialReadIsAvailable(void);
@@ -86,6 +85,9 @@ uint8_t serialReadPeek(uint8_t i);
 uint8_t serialReadNoWait(void);
 uint16_t serialReadWait(uint8_t milliSeconds);
 uint8_t serialReadBlock(void);
+#endif // !AVRLIB_SERIAL_WO
+int serialPutCharBlock(char c, FILE *stream);
+int serialPutCharNoWait(char c, FILE *stream);
 uint8_t serialWriteAvailableCnt(void);
 uint8_t serialWriteIsAvailable(void);
 uint8_t serialWriteNoWait(unsigned char c);
